@@ -46,7 +46,7 @@ for i in range(3):
     ljudfiler = högst_ljud
     print("ljudfiler:", ljudfiler)
 print("sparade lägst ljud:", lägst_ljud1)
-ljud1 = ljudfiler[0]
+ljud1 = "a"  # ljudfiler[0]
 print("ljud1: ", ljud1)  #högsta ljudet
 ljudfiler = []
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+        <title>Yanny vs. Laurel</title>
+
+        <link rel="icon" type="image/png" href="favicon.png" />
+        <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+        <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    </head>
+
+    <body>
+        A<br>
+        <audio controls>
+            <source src="500.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        B<br>
+        <audio controls>
+            <source src="1000.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        C<br>
+        <audio controls>
+            <source src="1500.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+
+        <div>Vilket ljud är tydligast (1 eller 2) ? </div>
+        <input type="text" id="test-input"/>
+        <button id="submit-button" type="submit" pys-onClick="move_on">KLAR</button>
+        <br>
+
+        <py-script>
+            print(1)
+            i = 3
+        </py-script>
+
+        <py-script>
+            print(i)
+        </py-script>
+    </body>
+</html>

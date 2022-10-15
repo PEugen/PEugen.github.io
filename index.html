@@ -1,23 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <title>REPL</title>
+        <title>Yanny vs. Laurel</title>
 
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-  </head>
+        <link rel="icon" type="image/jpeg" href="favicon.jpeg" />
+        <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+        <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    </head>
 
-  <body>
-    Hello world! <br>
-    This is the current date and time, as computed by Python:
-    <py-script>
-from datetime import datetime
-now = datetime.now()
-now.strftime("%m/%d/%Y, %H:%M:%S")
-    </py-script>
-  </body>
+    <body>
+        A<br>
+        <audio controls>
+            <source src="500.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        B<br>
+        <audio controls>
+            <source src="1000.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        C<br>
+        <audio controls>
+            <source src="1500.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        D<br>
+        <audio controls>
+            <source src="2000.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        E<br>
+        <audio controls>
+            <source src="2500.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        F<br>
+        <audio controls>
+            <source src="3000.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+        G<br>
+        <audio controls>
+            <source src="3500.wav" type="audio/wav">
+            Your browser does not support the audio element.
+        </audio><br>
+
+        <div>Vilket ljud är tydligast (1 eller 2) ? </div>
+        <input type="text" id="test-input"/>
+        <button id="submit-button" type="submit" py-onClick="move_on()">KLAR</button>
+        <br>
+        <div id="logbox"></div>
+        <br>
+
+        <py-script>
+            import asyncio
+            from js import console
+
+            ljudfiler = ["a","b","c","d","e","f","g"]
+            historik = []
+            wait_on_response = True
+
+            def move_on(*args, **kwargs):
+                console.log("hej")
+                global wait_on_response
+                wait_on_response = False
+        </py-script>
+
+        <py-script>
+            import subprocess, os
+            async def runda(toner, svagast_vinner):
+                global wait_on_response
+                starka_toner = []
+
+                for ton_1, ton_2 in zip(toner[::2], toner[1::2]):
+                    Element("logbox").element.innerText = f"\nJämför ljuden {ton_1} (1) och {ton_2} (2). När du är klar skriv ditt svar i textrutan utan mellanslag och tryck på klar."
+
+                    svar = None
+                    while wait_on_response:
+                        await asyncio.sleep(1)
+                    wait_on_response = True
+                    svar = Element("test-input").element.value
+
+                    if svar == "1":
+                        tonpar = (ton_1, ton_2)  # stark ton före svag ton
+                    else:
+                        tonpar = (ton_2, ton_1)
+                    starka_toner.append(tonpar[svagast_vinner])
+                    historik.append(tonpar)
+
+                # Lägger till sista tonen OM listan över toner är udda
+                # så den också kan jämföras.
+                if len(toner)%2:
+                    starka_toner.append(toner[-1])
+
+                console.log(len(starka_toner))
+
+                # Startar igång ytterligare en runda om det finns kvar
+                # toner att jämföra.
+                if len(starka_toner) == 1:
+                    return starka_toner[0]
+                else:
+                    return await runda(starka_toner, svagast_vinner=svagast_vinner)
+
+
+
+            den_högsta_tonen = await runda(ljudfiler, svagast_vinner=False)
+            print("", f"Kandidater : {ljudfiler}", f"Vinnare : {den_högsta_tonen}", sep="\n")
+
+            kandidater = [ton_2 for ton_1, ton_2 in historik if ton_1 == den_högsta_tonen]
+            console.log(kandidater)
+            den_näst_högsta_tonen = await runda(kandidater, svagast_vinner=False)
+            print("", f"Kandidater : {kandidater}", f"Vinnare : {den_näst_högsta_tonen}", sep="\n")
+
+            # höga_toner: Mängden av toner som i en jämförelse varit starkare än en annan
+            höga_toner = set(ton_1 for ton_1, _ in historik)
+            kandidater = list(set(ljudfiler)-höga_toner)
+            for k in kandidater:
+                console.log(k)
+            den_lägsta_tonen = await runda(kandidater, svagast_vinner=True)
+            print("", f"Kandidater : {kandidater}", f"Vinnare : {den_lägsta_tonen}", sep="\n")
+
+            kandidater = [ton_1 for ton_1, ton_2 in historik if
+                ton_2 == den_lägsta_tonen
+                and ton_1 in kandidater
+            ]
+            den_näst_lägsta_tonen = await runda(kandidater, svagast_vinner=True)
+            print("", f"Kandidater : {kandidater}", f"Vinnare : {den_näst_lägsta_tonen}", sep="\n")
+
+            print("Skriv ned följande:", den_högsta_tonen, den_näst_högsta_tonen, den_näst_lägsta_tonen, den_lägsta_tonen, "och lämna in.", sep=" ")
+        </py-script>
+    </body>
 </html>
