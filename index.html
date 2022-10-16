@@ -12,6 +12,7 @@
     </head>
 
     <body>
+        <title>Yanny vs. Laurel</title>
         A<br>
         <audio controls>
             <source src="500.wav" type="audio/wav">
@@ -49,8 +50,8 @@
         </audio><br>
 
         <div>Vilket ljud är tydligast (1 eller 2) ? </div>
-        <input type="text" id="test-input"/>
-        <button id="submit-button" type="submit" py-onClick="move_on()">KLAR</button>
+        <button id="submit-button" type="submit" py-onClick="move_on(1)">LJUD 1</button>
+        <button id="submit-button" type="submit" py-onClick="move_on(2)">LJUD 2</button>
         <br>
         <div id="logbox"></div>
         <br>
@@ -61,30 +62,29 @@
 
             ljudfiler = ["a","b","c","d","e","f","g"]
             historik = []
-            wait_on_response = True
+            svar = None
 
-            def move_on(*args, **kwargs):
+            def move_on(in_svar, *args, **kwargs):
                 console.log("hej")
-                global wait_on_response
-                wait_on_response = False
+                global svar
+                svar = int(in_svar)
         </py-script>
 
         <py-script>
             import subprocess, os
+            from js import document
             async def runda(toner, svagast_vinner):
-                global wait_on_response
+                global svar
                 starka_toner = []
 
                 for ton_1, ton_2 in zip(toner[::2], toner[1::2]):
-                    Element("logbox").element.innerText = f"\nJämför ljuden {ton_1} (1) och {ton_2} (2). När du är klar skriv ditt svar i textrutan utan mellanslag och tryck på klar."
+                    Element("logbox").element.innerText = f"\nFråga {len(historik)+1} : Jämför ljuden {ton_1} (1) och {ton_2} (2). När du är klar tryck på knapparna ovan."
 
                     svar = None
-                    while wait_on_response:
+                    while not svar:
                         await asyncio.sleep(1)
-                    wait_on_response = True
-                    svar = Element("test-input").element.value
 
-                    if svar == "1":
+                    if svar == 1:
                         tonpar = (ton_1, ton_2)  # stark ton före svag ton
                     else:
                         tonpar = (ton_2, ton_1)
